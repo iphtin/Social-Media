@@ -1,34 +1,35 @@
 "use client"
 
-import { AlignJustify, Bell, CircleUser, ExternalLink, Home, Menu, MessageCircleMore, Users } from 'lucide-react'
+import { CircleUser, Home, Menu, Users } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useSelector } from 'react-redux';
-import { Diversity1Rounded } from '@mui/icons-material';
-
-
-{/* <div className='flex max-md:hidden items-center space-x-2 pr-8'>
-        <img src={user?.profileImage || "https://images.pexels.com/photos/2138922/pexels-photo-2138922.jpeg"} alt='ProfileImage'
-          className='w-8 h-8 rounded-full' />
-        <button onClick={handleLogout} className='border-1 px-6 py-2 rounded-full cursor-pointer border-black font-semibold bg-red-500 text-white'>
-          Sign Out
-        </button>
-      </div> */}
+import { useSelector, useDispatch } from 'react-redux';
+import { setLogout } from '@features/posts/postsSlice';
+import { useRouter } from 'next/navigation';
 
 const Topbar = () => {
 
   const [loading, setLoading] = useState(true);
   const user = useSelector((state) => state.user);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { data: session } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     if (user) setLoading(false)
   }, [user])
 
+  if (!session || !user) {
+    // Redirect to sign-in page if user is not authenticated or does not exist
+    router.push('/');
+    return null; // You can also return a loading spinner or message here
+  }
+
   const handleLogout = async () => {
     signOut({ callbackUrl: "/" });
+    dispatch(setLogout()) 
   }
 
   return loading ? null : (

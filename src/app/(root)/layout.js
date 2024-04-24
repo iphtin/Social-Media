@@ -3,6 +3,7 @@ import "../globals.css";
 import Topbar from "@components/Topbar";
 import Providers from "@components/Prodiver";
 import ReduxProviders from "@components/ReduxProvier";
+import { ProtectRouters } from "../../../middleware";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,8 +18,10 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <ReduxProviders>
           <Providers>
-            <Topbar />
-            {children}
+            <ProtectRouters>
+              <Topbar />
+              {children}
+            </ProtectRouters>
           </Providers>
         </ReduxProviders>
       </body>
